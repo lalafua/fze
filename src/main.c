@@ -1,10 +1,14 @@
 #include <stdio.h>
 
 int main() {
-    int i = 5;
-    float j = i/2. ;
+    int i = 10;
     
-    printf("%f \n", j);
+    scanf("%d", &i);
+    printf("%d\n", i);
+
+    char c;
+    scanf("%c", &c);
+    printf("%c", c);
 
     return 0;
 }
