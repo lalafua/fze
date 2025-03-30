@@ -7,13 +7,30 @@ project(
     DESCRIPTION "For 408"
     )
 
-set(CMAKE_CXX_STANDARD 11)
+# Set C & CXX standard
+set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(SRC_LIST src/main.c)
+# Set binary output path
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/)
 
+# Set library output path
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib/)
 
-add_executable(main ${SRC_LIST})
+# Headers path
+include_directories(${PROJECT_SOURCE_DIR}/include/)
+
+# Library path
+include_directories(${PROJECT_SOURCE_DIR}/lib/)
+
+# Find source files
+file(GLOB MAIN_SRC_LIST ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
+file(GLOB MAIN_HEAD_LIST ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+
+# Add files
+add_executable(main ${MAIN_SRC_LIST})
+
+add_library(fze SHARED ${MAIN_SRC_LIST})
+#add_library(fze STATIC ${MAIN_SRC_LIST})
 
 add_custom_target(run_main
     COMMAND $<TARGET_FILE:main>
