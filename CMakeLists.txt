@@ -7,34 +7,32 @@ project(
     DESCRIPTION "For 408"
     )
 
-# Set C & CXX standard
-set(CMAKE_CXX_STANDARD 17)
+add_compile_options(-Wall -Wextra -g)
 
 # Set binary output path
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/)
+set(EXEC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
 
 # Set library output path
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib/)
+set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/)
 
-# Headers path
-include_directories(${PROJECT_SOURCE_DIR}/include/)
+# Set header path
+set(HEAD_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
-# Library path
-include_directories(${PROJECT_SOURCE_DIR}/lib/)
+# Set library name
+set(CALCULATOR_LIB calculator)
+set(SORT_LIB sort)
 
-# Find source files
-file(GLOB MAIN_SRC_LIST ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
-file(GLOB MAIN_HEAD_LIST ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+# Set exe name
+set(FZE_NAME fze)
 
-# Add files
-add_executable(main ${MAIN_SRC_LIST})
+# Add sub directory
+add_subdirectory(src/calculator)
+add_subdirectory(src/sort)
+add_subdirectory(src/fze)
 
-add_library(fze SHARED ${MAIN_SRC_LIST})
-#add_library(fze STATIC ${MAIN_SRC_LIST})
-
-add_custom_target(run_main
-    COMMAND $<TARGET_FILE:main>
-    DEPENDS main
-    COMMENT "Running main..."
-    VERBATIM
-    )
+# add_custom_target(run_main
+#     COMMAND $<TARGET_FILE:main>
+#     DEPENDS main
+#     COMMENT "Running main..."
+#     VERBATIM
+#     )
