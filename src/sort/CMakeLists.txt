@@ -7,4 +7,4 @@ include_directories(${HEAD_PATH})
 
 set(LIBRARY_OUTPUT_DIRECTORY ${LIB_PATH})
 
-add_library(${SORT_LIB} SHARED ${SORT_SRC})
+# add_library(${SORT_LIB} SHARED ${SORT_SRC})
