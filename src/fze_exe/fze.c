@@ -2,20 +2,20 @@
 #include <stdlib.h>
 #include "calculator.h"
 
-int main(int argc, char* argv[]){
-    if (argc != 4){
-        fprintf(stderr, "usage: %s num1 operater num2 \n", argv[0]);
-        fprintf(stderr, "support operater: + - * / \n");
-        exit(EXIT_FAILURE);
+int main(int argc, char * argv[]){
+    int arr[3][4]={
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10 , 11, 12}
+    };
+
+    int(*ptra)[4];
+    ptra = arr;
+
+    int* ptrb[3];
+    for (int i = 0; i < 3; i++){
+        ptrb[i] = arr[i];
     }
-
-    double num1 = atof(argv[1]);
-    double num2 = atof(argv[3]);
-    char* operater = argv[2];
-
-    int arr[] = {1, 2 , 3};
-    int (*ptr)[3];
-    ptr = &arr;
 
     return 0;
 }
