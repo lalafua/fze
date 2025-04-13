@@ -1,16 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "calculator.h"
 
-int main(){
-    float a = 0.f;
-    float b = 0.f;
+int main(int argc, char* argv[]){
+    if (argc != 4){
+        fprintf(stderr, "usage: %s num1 operater num2 \n", argv[0]);
+        fprintf(stderr, "support operater: + - * / \n");
+        exit(EXIT_FAILURE);
+    }
 
-    scanf("%f", &a);
-    scanf("%f", &b);
+    double num1 = atof(argv[1]);
+    double num2 = atof(argv[3]);
+    char* operater = argv[2];
 
-    double result = 0.0;
-    calc(a, "+", b, &result);
-    fprintf(stdout, "%f", result);
+    int arr[] = {1, 2 , 3};
+    int (*ptr)[3];
+    ptr = &arr;
 
     return 0;
 }

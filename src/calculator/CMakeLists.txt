@@ -9,4 +9,4 @@ include_directories(${HEAD_PATH})
 
 set(LIBRARY_OUTPUT_PATH ${LIB_PATH})
 
-add_library(${CALCULATOR_LIB} SHARED ${CALCULATOR_SRC})
+add_library(calculator SHARED ${CALCULATOR_SRC})
