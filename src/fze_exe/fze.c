@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "calculator.h"
+#include <string.h>
+
 
 int main(int argc, char * argv[]){
     int arra[3][4]={
@@ -46,6 +48,22 @@ int main(int argc, char * argv[]){
 
     int (*funcptr)(int, int);
 
+    char *str = "abcdccdeabcdoo";
+    char str1[20] = "awdwaddwa";
+    int n = 0;
+    for(char *ptr = strstr(str, "abcd"); ptr != NULL; ptr = strstr(ptr+strlen("abcd"),"abcd")){
+        n++;
+    }
+    printf("%d \n", n);
+
+    fopen()
 
     return 0;
 }
+
+struct Student{
+    char name[50];
+    int age;
+};
+
+static struct Student s[3] = {0};
