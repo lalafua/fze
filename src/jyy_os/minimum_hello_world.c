@@ -1,5 +1,5 @@
-#include <stdio.h>
+#include <sys/syscall.h>
 
-int main(){
-  printf("Hello World!");
+int main () {
+  syscall(SYS_exit, 42);
 }
