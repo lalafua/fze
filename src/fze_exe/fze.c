@@ -56,8 +56,6 @@ int main(int argc, char * argv[]){
     }
     printf("%d \n", n);
 
-    fopen()
-
     return 0;
 }
 
