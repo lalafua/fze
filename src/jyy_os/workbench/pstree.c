@@ -7,11 +7,13 @@
 #include <dirent.h>
 #include <stdlib.h>
 
-typedef struct proc_info {
+typedef struct proc {
     pid_t pid;
     pid_t ppid;
     pid_t tgid;
     char *name;
+    int level;
+    struct proc* parent;
 }proc_info;
 
 #define MAX_PROCS 65535
@@ -22,28 +24,28 @@ int get_pid_info(proc_info *list[], int max_proc);
 int read_status(pid_t pid, pid_t tgid,proc_info *info);
 
 int main(int argc, char *argv[]) {
-    static int show_pids = 0;
-    static int numeric_sort = 0;
-    static int version = 0;
+    static int if_show_pids = 0;
+    static int if_numeric_sort = 0;
+    static int if_version = 0;
     static proc_info *proc_list[MAX_PROCS] = {NULL};
 
     for (int i = 0; i < argc; i++) {
         assert(argv[i]);
         if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--show-pids") == 0){
-            show_pids = 1;
+            if_show_pids = 1;
         }
         else if (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--numeric-sort") == 0){
-            numeric_sort = 1;
+            if_numeric_sort = 1;
         }
         else if (strcmp(argv[i], "-V") == 0 || strcmp(argv[i], "--version") == 0){
-            version = 1;
+            if_version = 1;
         }
     }
     assert(!argv[argc]);
 
     int proc_count = get_pid_info(proc_list, MAX_PROCS);
     for(int i=0; i<proc_count; i++){
-        printf("Tgid: %d\tPid: %d \n", proc_list[i]->tgid, proc_list[i]->pid);
+        printf("Name: %s\tPpid: %d\tTgid: %d\tPid: %d\n", proc_list[i]->name, proc_list[i]->ppid, proc_list[i]->tgid, proc_list[i]->pid);
     }
 
 
@@ -127,8 +129,10 @@ int read_status(pid_t tgid, pid_t pid, proc_info *info){
 
     info->pid = pid;
     info->name = NULL;
+    info->parent = NULL;
     info->ppid = -1;
     info->tgid = -1;
+    info->level = -1;
 
     while(fgets(line, sizeof(line), fp)){
         if(strncmp(line, "Name:", 5) == 0){
@@ -148,6 +152,7 @@ int read_status(pid_t tgid, pid_t pid, proc_info *info){
         }
         else if(strncmp(line, "PPid:", 5) == 0){
             sscanf(line, "PPid:\t%d", &info->ppid);
+            if(info->ppid == 0) info->level=0;
         }
         else if(strncmp(line, "Tgid:", 5) == 0){
             sscanf(line, "Tgid:\t%d", &info->tgid);
@@ -158,9 +163,40 @@ int read_status(pid_t tgid, pid_t pid, proc_info *info){
     return 0;
 }
 
-int print_pstree(proc_info *proc_list[], int proc_count, int level, int tgid,int show_pids){
+proc_info* find_parent(proc_info *proc_list[], pid_t pid_to_find, int proc_count){
     for(int i=0; i<proc_count; i++){
-        if(proc_list[i] != NULL)
+        if(proc_list[i] != NULL && proc_list[i]->pid == pid_to_find){
+            return proc_list[i];
+        }
+    }
+    return NULL;
+}
+
+void calculate_level(proc_info *proc_list[], int proc_count){
+    for(int i=0; i<proc_count; i++){
+        if(proc_list[i] != NULL && proc_list[i]->level == -1){
+            proc_list[i]->parent = find_parent(proc_list, proc_list[i]->ppid, proc_count);
+        }
+    }
+
+    int current_level = 0;
+    int changed = 0;
+    for(; changed !=1; ){
+        for(int i=0; i<proc_count; i++){
+            if(proc_list[i]->parent != NULL && proc_list[i]->parent->level == current_level){
+                proc_list[i]->level = current_level + 1;
+                changed = 1;
+            }
+        }
+        if(changed == 1){
+            current_level++;
+        }
+    }
+
+}
+
+int print_pstree(proc_info *proc_list[], int proc_count, int if_show_pids){
+    for(int i=0; i<proc_count; i++){
     }
 }
 
