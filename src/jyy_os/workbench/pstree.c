@@ -13,7 +13,7 @@ typedef struct proc {
     pid_t tgid;
     char *name;
     int level;
-    struct proc* parent;
+    struct proc *parent;
 }proc_info;
 
 #define MAX_PROCS 65535
@@ -22,6 +22,10 @@ typedef struct proc {
 int is_pid_dir(const char *dirname);
 int get_pid_info(proc_info *list[], int max_proc);
 int read_status(pid_t pid, pid_t tgid,proc_info *info);
+proc_info *find_parent(proc_info *proc_list[], pid_t pid, int proc_count);
+void calculate_level(proc_info *proc_list[], int proc_count);
+void print_pstree(proc_info *proc_list[], int proc_count, int if_show_pids);
+int freeup(proc_info *proc_list[], int proc_count);
 
 int main(int argc, char *argv[]) {
     static int if_show_pids = 0;
@@ -44,10 +48,12 @@ int main(int argc, char *argv[]) {
     assert(!argv[argc]);
 
     int proc_count = get_pid_info(proc_list, MAX_PROCS);
-    for(int i=0; i<proc_count; i++){
-        printf("Name: %s\tPpid: %d\tTgid: %d\tPid: %d\n", proc_list[i]->name, proc_list[i]->ppid, proc_list[i]->tgid, proc_list[i]->pid);
-    }
+    // calculate_level(proc_list, proc_count);
+    // for(int i=0; i<proc_count; i++){
+    //     printf("Name: %s\tPpid: %d\tTgid: %d\tPid: %d\tLevel: %d\n", proc_list[i]->name, proc_list[i]->ppid, proc_list[i]->tgid, proc_list[i]->pid, proc_list[i]->level);
+    // }
 
+    print_pstree(proc_list, proc_count, 1);
 
     return 0;
 }
@@ -180,9 +186,14 @@ void calculate_level(proc_info *proc_list[], int proc_count){
     }
 
     int current_level = 0;
-    int changed = 0;
-    for(; changed !=1; ){
+    int changed;
+    do{
+        changed = 0;
         for(int i=0; i<proc_count; i++){
+            if(proc_list[i] == NULL || proc_list[i]->level != -1){
+                continue;
+            }
+
             if(proc_list[i]->parent != NULL && proc_list[i]->parent->level == current_level){
                 proc_list[i]->level = current_level + 1;
                 changed = 1;
@@ -191,15 +202,24 @@ void calculate_level(proc_info *proc_list[], int proc_count){
         if(changed == 1){
             current_level++;
         }
-    }
+    }while(changed);
 
 }
 
-int print_pstree(proc_info *proc_list[], int proc_count, int if_show_pids){
-    for(int i=0; i<proc_count; i++){
-    }
+void print_pstree(proc_info *proc_list[], int proc_count, int if_show_pids){
+    calculate_level(proc_list, proc_count);
+    
+    
+
 }
 
 int freeup(proc_info *proc_list[], int proc_count){
-
+    for (int i = 0; i < proc_count; i++) {
+        if (proc_list[i] != NULL) {
+            free(proc_list[i]->name);
+            free(proc_list[i]);  
+            proc_list[i] = NULL;    
+        }
+    }
+    return 0;
 }
